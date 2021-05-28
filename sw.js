@@ -38,6 +38,9 @@ self.addEventListener('activate', event => {
       if (key !== STATIC_CACHE && keys.includes('static')) {
         return caches.delete(key);
       }
+      if (key !== DYNAMIC_CACHE && key.includes('dynamic') ) {
+        return caches.delete(key);
+      }
     });
   });
 
@@ -50,11 +53,10 @@ self.addEventListener('fetch', event => {
       return resp;
     } else {
       return fetch(event.request).then(fetchResponse => {
-        updateDynamicCache(DYNAMIC_CACHE, event.request, fetchResponse);
+        return updateDynamicCache(DYNAMIC_CACHE, event.request, fetchResponse);
       });
     }
   });
-
   event.respondWith(response);
 });
 
